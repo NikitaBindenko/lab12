@@ -1,0 +1,214 @@
+#define _CRT_SECURE_NO_WARNINGS
+//#include<stdio.h>
+#include <iostream>
+#include <cstdlib>
+
+using namespace std;
+
+class Rational
+{
+private:
+	int num, den;
+public:
+	Rational() :num(0), den(1) { /*cout << "Constructor" << endl;*/ }
+	Rational(const int val) : num(val), den(1) { /*cout << "Constructor" << endl;*/ }
+	Rational(const int num, const int den) :num(num), den(den)
+	{
+		if (this -> den < 0)
+		{
+			this->den = this->den * -1;
+			this->num = this->num * -1;
+		}
+	}
+	Rational(Rational &other)	//конструктор копий
+	{
+		this->num = other.num;
+		this->den = other.den;
+		//cout << "Copy Constructor" << endl;
+	};
+
+	~Rational() { /*cout << "Destructor" << endl;*/ };		//деструктор
+
+
+	void SetNum(int val)
+	{
+		num = val;
+	}
+	void SetDen(int val)
+	{
+		if (this->den < 0)
+		{
+			den = den * -1;
+			num = num * -1;
+		}
+		else if (den == 0)
+		{
+			//printf("Invaluable input: Integer cannot be divided by Zero");
+			cout << "Invaluable input: Integer cannot be divided by Zero" << endl;
+		}
+		else
+		{
+			den = num;
+		}
+	}
+
+	int GetNum(Rational val)
+	{
+		return val.num;
+	}
+	int GetDen(Rational val)
+	{
+		return val.den;
+	}
+
+	void Print()
+	{
+		cout << num << "/" << den << endl;
+	}
+
+	void Scan()
+	{
+		int numerator, denumerator;
+		cout << "\n" << "Input Numerator:" << endl;
+		cin >> numerator;
+		cout << "\n" << "Input Denumerator:" << endl;
+		cin >> denumerator;
+
+		if (numerator && denumerator)
+		{
+			if (denumerator < 0)
+			{
+				this->den = denumerator * -1;
+				num = numerator * -1;
+			}
+			else
+			{
+				den = denumerator;
+				num = numerator;
+			}
+		}
+		else
+		{
+			cout <<"\nINVALUABLE INPUT" << endl;
+		}
+	}
+
+	int GCD(int a, int b)
+	{
+		if (a < 0)
+		{
+			a = a * -1;
+		}
+		if (b < 0)
+		{
+			b = b * -1;
+		}
+		while (a != 0 && b != 0)
+		{
+			if (a > b)
+			{
+				a = a % b;
+			}
+			else
+			{
+				b = b % a;
+			}
+		}
+		int result = a + b;
+		if (result < 0)
+		{
+			result = -result;
+		}
+		return result;
+	}
+
+	Rational operator + (const Rational& other)
+	{
+		Rational result;
+		result.num = this->num * other.den + other.num * this->den;
+		result.den = this->den * other.den;
+		int div = GCD(result.num, result.den);
+		result.num = result.num / div;
+		result.den = result.den / div;
+		return result;
+	}
+	Rational operator - (const Rational& other)
+	{
+		Rational result;
+		result.num = this->num * other.den - other.num * this->den;
+		result.den = this->den * other.den;
+		int div = GCD(result.num, result.den);
+		result.num = result.num / div;
+		result.den = result.den / div;
+		return result;
+	}
+	Rational operator * (const Rational& other)
+	{
+		Rational result;
+		result.num = this->num * other.num;
+		result.den = this->den * other.den;
+		int div = GCD(result.num, result.den);
+		result.num = result.num / div;
+		result.den = result.den / div;
+		return result;
+	}
+	Rational operator / (const Rational& other)
+	{
+		Rational result;
+		result.num = this->num * other.den;
+		result.den = this->den * other.num;
+		int div = GCD(result.num, result.den);
+		result.num = result.num / div;
+		result.den = result.den / div;
+		return result;
+	}
+	Rational operator = (const Rational& other)
+	{
+		num = other.num;
+		den = other.den;
+		//cout << "Assignment Operator" << endl;
+		return *this;
+	}
+	Rational operator = (const int val)
+	{
+		num = val;
+		den = 1;
+		//cout << "Assignment Operator" << endl;
+		return *this;
+	}
+};
+
+int main()
+{
+	Rational a, b, c;
+	char d;
+	a.Scan();
+
+	cout << "\nChoose operation: + - * /" << endl;
+	cin >> d;
+	int operation = (int) d;
+
+	b.Scan();
+
+	if (operation == 43)
+	{
+		c = a + b;
+	}
+	else if (operation == 45)
+	{
+		c = a - b;
+	}
+	else if (operation == 42)
+	{
+		c = a * b;
+	}
+	else if (operation == 47)
+	{
+		c = a / b;
+	}
+
+	cout << "\nAnswer is:" << endl;
+	c.Print();
+
+	return 0;
+}
